@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activar Mi Escudo · VerixID</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #0B1120; color: #F8FAFC; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .box { max-width: 460px; width: 100%; background: #0F172A; border: 1px solid #1E293B; border-radius: 20px; padding: 24px; }
+        h1 { font-size: 21px; margin: 0 0 6px; text-align: center; color: #10B981; }
+        p { text-align: center; color: #94A3B8; font-size: 13px; margin: 0 0 18px; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #94A3B8; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, textarea { width: 100%; box-sizing: border-box; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #1E293B; color: #FFF; font-size: 14px; }
+        button { width: 100%; margin-top: 22px; padding: 14px; border-radius: 12px; border: none; background: #10B981; color: #064E3B; font-weight: 800; font-size: 15px; cursor: pointer; }
+        a { display: block; text-align: center; margin-top: 14px; color: #94A3B8; font-size: 13px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🛡️ Activar Mi Escudo VerixID</h1>
+        <p>Crea tu pasaporte oficial en 15 segundos. Luego podrás sumar más canales desde tu perfil.</p>
+        <form method="POST" autocomplete="off">
+            <label>Nombre o Marca Oficial *</label>
+            <input type="text" name="nombre" placeholder="Ej: Stewart Pérez / Empresa" required>
+            <label>Profesión, Empresa o Rol *</label>
+            <input type="text" name="profesion" placeholder="Ej: Consultor / Agencia" required>
+            <label>ID Fiscal / Registro Legal (Opcional)</label>
+            <input type="text" name="documento_id" placeholder="Tax ID · NIT · RUC · CUIT · EIN · Cédula">
+            <label>País / Jurisdicción *</label>
+            <select name="ubicacion">
+                <option value="🇨🇴 Colombia · Verificado" selected>🇨🇴 Colombia</option>
+                <option value="🇲🇽 México · Verificado">🇲🇽 México</option>
+                <option value="🇺🇸 Estados Unidos · Verificado">🇺🇸 Estados Unidos</option>
+                <option value="🇪🇸 España · Verificado">🇪🇸 España</option>
+                <option value="🇦🇷 Argentina · Verificado">🇦🇷 Argentina</option>
+                <option value="🇨🇱 Chile · Verificado">🇨🇱 Chile</option>
+                <option value="🇵🇪 Perú · Verificado">🇵🇪 Perú</option>
+                <option value="🌍 Global · Verificado">🌍 Otro País / Global</option>
+            </select>
+            <label>Tu Canal Principal Oficial *</label>
+            <select name="canal_tipo" style="margin-bottom:8px;">
+                <option value="WhatsApp Principal">WhatsApp Principal</option>
+                <option value="Correo Electrónico">Correo Electrónico</option>
+                <option value="LinkedIn Oficial">LinkedIn Oficial</option>
+                <option value="Instagram Oficial">Instagram Oficial</option>
+                <option value="Telegram Oficial">Telegram Oficial</option>
+                <option value="Sitio Web Oficial">Sitio Web Oficial</option>
+            </select>
+            <input type="text" name="canal_valor" placeholder="Ej: +57 300 000 0000 o tu@correo.com" required>
+            <label>Llave Pública Nostr (npub · Opcional)</label>
+            <input type="text" name="nostr_npub" placeholder="npub1... (Firma criptográfica descentralizada)">
+            <label>Aviso Oficial</label>
+            <textarea name="alerta_activa" rows="2">Solo atiendo y recibo pagos por los canales verificados en este escudo.</textarea>
+            <button type="submit">🚀 Crear Mi Escudo Oficial</button>
+        </form>
+        <a href="/v/maria-perez?demo=1">← Volver al perfil demo</a>
+    </div>
+</body>
+</html>
