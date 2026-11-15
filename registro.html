@@ -18,7 +18,7 @@
 <body>
     <div class="box">
         <h1>🛡️ Activar Mi Escudo VerixID</h1>
-        <p>Crea tu pasaporte oficial en 15 segundos. Luego podrás sumar más canales desde tu perfil.</p>
+        <p>Crea tu pasaporte blindado en 15 segundos.</p>
         <form method="POST" autocomplete="off">
             <label>Nombre o Marca Oficial *</label>
             <input type="text" name="nombre" placeholder="Ej: Stewart Pérez / Empresa" required>
@@ -47,11 +47,13 @@
                 <option value="Sitio Web Oficial">Sitio Web Oficial</option>
             </select>
             <input type="text" name="canal_valor" placeholder="Ej: +57 300 000 0000 o tu@correo.com" required>
+            <label>PIN Secreto de Dueño (4 a 6 dígitos) *</label>
+            <input type="password" name="pin" inputmode="numeric" minlength="4" maxlength="6" placeholder="Ej: 2580 (Protege tu perfil contra cambios)" required>
             <label>Llave Pública Nostr (npub · Opcional)</label>
             <input type="text" name="nostr_npub" placeholder="npub1... (Firma criptográfica descentralizada)">
             <label>Aviso Oficial</label>
             <textarea name="alerta_activa" rows="2">Solo atiendo y recibo pagos por los canales verificados en este escudo.</textarea>
-            <button type="submit">🚀 Crear Mi Escudo Oficial</button>
+            <button type="submit">🔒 Crear Mi Escudo Blindado</button>
         </form>
         <a href="/v/maria-perez?demo=1">← Volver al perfil demo</a>
     </div>
