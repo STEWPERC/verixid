@@ -6,6 +6,9 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__, template_folder='.')
 DB_FILE = "perfiles.json"
 
+def hash_pin(pin):
+    return hashlib.sha256(("verixid_salt_" + str(pin).strip()).encode()).hexdigest()
+
 def cargar():
     data = json.load(open(DB_FILE, "r", encoding="utf-8")) if os.path.exists(DB_FILE) else {}
     data["maria-perez"] = {
@@ -14,6 +17,7 @@ def cargar():
         "documento_id": "Tax ID / NIT 900.000.000-1",
         "nostr_npub": "npub1verixiddemopublickey000000000000",
         "ubicacion": "🇨🇴 Colombia · Verificado",
+        "pin_hash": "",
         "canales": [
             {"red": "WhatsApp Principal", "usuario": "+57 300 000 0000", "url": "/registro"},
             {"red": "Correo Electrónico", "usuario": "maria@ejemplo.com", "url": "/registro"}
@@ -26,7 +30,9 @@ def guardar(data):
     json.dump(data, open(DB_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 
 def armar_url(tipo, valor):
-    v, t = valor.strip(), tipo.lower()
+    v = re.sub(r'[<>"\']', '', valor.strip())
+    t = tipo.lower()
+    if v.lower().startswith(("javascript:", "data:", "vbscript:")): return "#"
     if v.startswith(("http://", "https://")): return v
     if "whatsapp" in t:
         num = "".join(c for c in v if c.isdigit())
@@ -50,8 +56,10 @@ def verificar(perfil, consulta):
     return {"tipo": "desconocido", "titulo": "⚠️ CANAL NO REGISTRADO", "msg": f"'{consulta}' no aparece en el escudo oficial de {perfil['nombre']}."}
 
 @app.route("/")
-def inicio():
-    return render_template("splash.html")
+def inicio(): return render_template("splash.html")
+
+@app.route("/@<slug>")
+def atajo(slug): return redirect(url_for("pasaporte", slug=slug))
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
@@ -67,6 +75,7 @@ def registro():
             "documento_id": request.form.get("documento_id", "").strip(),
             "nostr_npub": request.form.get("nostr_npub", "").strip(),
             "ubicacion": request.form.get("ubicacion", "🇨🇴 Colombia · Verificado"),
+            "pin_hash": hash_pin(request.form.get("pin", "0000")),
             "canales": [{"red": t, "usuario": v, "url": armar_url(t, v)}] if v else [],
             "alerta_activa": request.form.get("alerta_activa", "").strip()
         }
@@ -81,12 +90,14 @@ def pasaporte(slug):
     if not p: return "<script>localStorage.removeItem('verixid_mi_perfil');location.replace('/v/maria-perez?demo=1');</script>"
     cod = "VX-" + hashlib.sha256(slug.encode()).hexdigest()[:6].upper()
     res = verificar(p, request.form.get("canal", "")) if request.method == "POST" else None
-    return render_template("pasaporte.html", slug=slug, perfil=p, codigo_id=cod, res=res, hora=datetime.now().strftime("%d/%m/%Y %H:%M"))
+    return render_template("pasaporte.html", slug=slug, perfil=p, codigo_id=cod, res=res, hora=datetime.now().strftime("%d/%m/%Y %H:%M"), error=request.args.get("err"))
 
 @app.route("/v/<slug>/agregar", methods=["POST"])
 def agregar(slug):
     data = cargar()
     if slug in data and slug != "maria-perez":
+        if hash_pin(request.form.get("pin", "")) != data[slug].get("pin_hash"):
+            return redirect(url_for("pasaporte", slug=slug, err="PIN incorrecto. Acceso denegado."))
         t, v = request.form.get("tipo", ""), request.form.get("valor", "").strip()
         if v:
             data[slug]["canales"].append({"red": t, "usuario": v, "url": armar_url(t, v)})
@@ -97,6 +108,8 @@ def agregar(slug):
 def quitar(slug, idx):
     data = cargar()
     if slug in data and slug != "maria-perez" and 0 <= idx < len(data[slug]["canales"]) and len(data[slug]["canales"]) > 1:
+        if hash_pin(request.form.get("pin", "")) != data[slug].get("pin_hash"):
+            return redirect(url_for("pasaporte", slug=slug, err="PIN incorrecto. Acceso denegado."))
         data[slug]["canales"].pop(idx)
         guardar(data)
     return redirect(url_for("pasaporte", slug=slug))
